@@ -22,15 +22,31 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Drawer from "@mui/material/Drawer";
 
 const Nav = () => {
     
     const theme = useTheme() 
     const router = useRouter()
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"))
+    const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
     const [anchorEI, setAnchorEI] = useState(null)
 
+      const toggleMobileDrawer = (open) => (event) => {
+        if (
+          event.type === "keydown" &&
+          (event.key === "Tab" || event.key === "Shift")
+        ) {
+          return;
+        }
+        setMobileDrawerOpen(open);
+      };
+    
+    
+    
+    
+    
     const handleClick = (event) => {
       setAnchorEI(event.currentTarget)
     }
@@ -75,32 +91,55 @@ const Nav = () => {
            </Button>
         </Link>
         <Link href="/" passHref>
-           <Button 
-             sx={{
-              color: "black",
-              fontSize: isSmallScreen ? "0.8rem" : "1rem",
-             }}
-             onClick={handleClick}
-             endIcon={<KeyboardArrowDownIcon />}
-           >
-             Pages
-           </Button>
-        
+           
+            <>
+            <Button
+              sx={{
+                color: "black",
+                fontSize: isSmallScreen ? "0.8rem" : "1rem",
+              }}
+              onClick={handleClick}
+              endIcon={<KeyboardArrowDownIcon />}
+            >
+              Pages
+            </Button>
+
             <Menu
               anchorEl={anchorEI}
-              onClose={handleClose}
               open={Boolean(anchorEI)}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
             >
-              <MenuItem>
-                 <Link href="/about">About</Link>
+              <MenuItem onClick={handleClose}>
+                <Link href="/about" style={{ textDecoration: "none", color: "inherit" }}>
+                  About
+                </Link>
               </MenuItem>
-              <MenuItem>
-                 <Link href="/service">Service</Link>
+
+              <MenuItem onClick={handleClose}>
+                <Link href="/service" style={{ textDecoration: "none", color: "inherit" }}>
+                  Service
+                </Link>
               </MenuItem>
-              <MenuItem>
-                 <Link href="/contact">Contact</Link>
+
+              <MenuItem onClick={handleClose}>
+                <Link href="/contact" style={{ textDecoration: "none", color: "inherit" }}>
+                  Contact
+                </Link>
               </MenuItem>
             </Menu>
+          </>
+        
+        
+        
+        
         
         
         
@@ -115,7 +154,7 @@ const Nav = () => {
     
     
     return (
-        <Box
+      <Box
           sx={{
             width:"100%",
             backgroundColor:"white",
@@ -149,7 +188,7 @@ const Nav = () => {
            >
             {isSmallScreen && (
               <IconButton>
-                  <MenuIcon />
+                  <MenuIcon onClick={toggleMobileDrawer(true)}/>
               </IconButton>
             )}
             <Typography
@@ -265,7 +304,52 @@ const Nav = () => {
           
         </Box>
         
+          {/* Mobile Menu Drawer */}
+      <Drawer
+        anchor="left"
+        open={mobileDrawerOpen}
+        onClose={toggleMobileDrawer(false)}
+      >
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={toggleMobileDrawer(false)}
+          onKeyDown={toggleMobileDrawer(false)}
+        >
+          <List>
+            <ListItem>
+              <ListItemText>
+                <Link href="/" passHref>
+                  Home
+                </Link>
+              </ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>
+                <Link href="/about" passHref>
+                  About
+                </Link>
+              </ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>
+                <Link href="/contact" passHref>
+                  Contact
+                </Link>
+              </ListItemText>
+            </ListItem>
+            <ListItem>
+              <ListItemText>
+                <Link href="/test" passHref>
+                  Test
+                </Link>
+              </ListItemText>
+            </ListItem>
+          </List>
         </Box>
+      </Drawer>
+        
+      </Box>
     )
 }
 
